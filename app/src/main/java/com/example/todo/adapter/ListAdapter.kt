@@ -9,11 +9,14 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.R
-import com.example.todo.data.TodoData
+import com.example.todo.data.TodoDao
+import com.example.todo.data.TodoModel
+import com.example.todo.viewmodel.TodoViewModel
 
 class ListAdapter (
-    private var context: Context,
-    private var dataList: List<TodoData>
+    var context: Context,
+    var dataList: MutableList<TodoModel>,
+    var viewModel: TodoViewModel
 ): RecyclerView.Adapter<ListAdapter.MyViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListAdapter.MyViewHolder {
@@ -21,12 +24,16 @@ class ListAdapter (
         return MyViewHolder(view)
     }
 
-    fun setData(dataList: List<TodoData>){
+    fun setData(dataList: MutableList<TodoModel>){
         this.dataList = dataList
     }
 
+    fun getData(): MutableList<TodoModel> {
+        return dataList
+    }
+
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val data: TodoData = dataList[position]
+        val data: TodoModel = dataList[position]
         val titleText = data.title
         val status = data.status
 
@@ -39,6 +46,8 @@ class ListAdapter (
 
         holder.checkSample.setOnClickListener {
             // mark task as done
+            val newData = TodoModel((position+1), titleText, 1)
+            viewModel.updateTask(newData)
 
             holder.check.visibility = View.VISIBLE
             holder.title.setTextColor(ContextCompat.getColor(context, R.color.grey))
