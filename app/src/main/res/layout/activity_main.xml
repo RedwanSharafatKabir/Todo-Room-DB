@@ -28,8 +28,11 @@
             android:orientation="vertical"
             android:paddingBottom="200dp">
 
-            <include
-                layout="@layout/list_adapter"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/taskList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/list_adapter"/>
 
         </LinearLayout>
 
