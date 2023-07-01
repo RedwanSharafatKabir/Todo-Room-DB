@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,11 +35,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        try{
-            viewModel = ViewModelProvider(this)[TodoViewModel::class.java]
-        } catch (e: Exception){
-            e.printStackTrace()
-        }
+        viewModel = ViewModelProvider(this)[TodoViewModel::class.java]
 
         taskList = arrayListOf()
         recyclerView = binding.taskList
@@ -60,7 +57,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun loadData() {
-        viewModel.tasks.observe(this) { taskEntries ->
+        viewModel.allTodo.observe(this) { taskEntries ->
             taskList = taskEntries.toMutableList()
 
             listAdapter!!.setData(taskList)

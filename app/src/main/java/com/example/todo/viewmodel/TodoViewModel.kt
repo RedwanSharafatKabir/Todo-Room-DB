@@ -3,34 +3,33 @@ package com.example.todo.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.example.todo.data.TodoDatabase
 import com.example.todo.data.TodoModel
 import com.example.todo.repository.TodoRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class TodoViewModel(application: Application?) : AndroidViewModel(application!!) {
+class TodoViewModel(application: Application) : AndroidViewModel(application) {
 
-    val tasks: LiveData<List<TodoModel>> = TODO()
-    private val todoRepository: TodoRepository = TODO()
+    private val repository: TodoRepository
+    val allTodo : LiveData<List<TodoModel>>
 
     init {
         val database: TodoDatabase? = TodoDatabase.getInstance(getApplication())
-        todoRepository = TodoRepository(database!!)
-        tasks = todoRepository.getAllTasks()
+        repository = TodoRepository(database!!)
+        allTodo = repository.getAllTasks()
     }
 
-    fun getTasks(): LiveData<List<TodoModel>> {
-        return tasks
+    fun insertTask(todoModel: TodoModel) = viewModelScope.launch(Dispatchers.IO){
+        repository.insertTask(todoModel)
     }
 
-    fun insertTask(todoModel: TodoModel) {
-        todoRepository.insertTask(todoModel)
+    fun updateTask(todoModel: TodoModel) = viewModelScope.launch(Dispatchers.IO){
+        repository.updateTask(todoModel)
     }
 
-    fun updateTask(todoModel: TodoModel) {
-        todoRepository.updateTask(todoModel)
-    }
-
-    fun deleteTask(todoModel: TodoModel) {
-        todoRepository.deleteTask(todoModel)
+    fun deleteTask(todoModel: TodoModel) = viewModelScope.launch(Dispatchers.IO){
+        repository.deleteTask(todoModel)
     }
 }
