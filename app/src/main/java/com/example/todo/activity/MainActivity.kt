@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,7 +34,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this)[TodoViewModel::class.java]
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(TodoViewModel::class.java)
 
         taskList = arrayListOf()
         recyclerView = binding.taskList
@@ -102,8 +101,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     if(title.isNotEmpty()){
                         dialogBinding.progressBar.visibility = View.VISIBLE
 
-                        val id = taskList.size + 1
-                        val data = TodoModel(id, title, 0)
+                        val data = TodoModel(title, 0)
                         viewModel.insertTask(data)
 
                         Toast.makeText(this@MainActivity, "Task assigned successfully", Toast.LENGTH_LONG).show()

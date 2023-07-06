@@ -1,32 +1,36 @@
 package com.example.todo.repository
 
+import android.app.Application
 import androidx.lifecycle.LiveData
+import com.example.todo.data.TodoDao
 import com.example.todo.data.TodoDatabase
 import com.example.todo.data.TodoModel
 
-class TodoRepository(database: TodoDatabase) {
+class TodoRepository(application: Application) {
 
-    var database: TodoDatabase
-    lateinit var taskList: LiveData<List<TodoModel>>
+    var database: TodoDatabase? = null
+    var todoDao: TodoDao? = null
+    private var taskList: LiveData<List<TodoModel>>? = null
 
     init {
-        this.database = database
+        this.database = TodoDatabase.getInstance(application)
+        todoDao = database!!.todoDao()
+        taskList = todoDao!!.loadTodo()
     }
 
-    fun insertTask(todoModel: TodoModel){
-        database.todoDao().insertTodo(todoModel)
-    }
-
-    fun getAllTasks(): LiveData<List<TodoModel>> {
-        taskList = database.todoDao().loadTodo()
-        return taskList
+    fun insertTask(todoModel: TodoModel) {
+        TodoDatabase.databaseWriteExecutor.execute { todoDao!!.insertTodo(todoModel) }
     }
 
     fun deleteTask(todoModel: TodoModel) {
-        database.todoDao().deleteTodo(todoModel)
+        TodoDatabase.databaseWriteExecutor.execute { todoDao!!.deleteTodo(todoModel) }
     }
 
     fun updateTask(todoModel: TodoModel) {
-        database.todoDao().updateTodo(todoModel)
+        TodoDatabase.databaseWriteExecutor.execute { todoDao!!.updateTodo(todoModel) }
+    }
+
+    fun getAllTasks(): LiveData<List<TodoModel>> {
+        return taskList!!
     }
 }

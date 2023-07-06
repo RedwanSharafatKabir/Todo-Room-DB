@@ -46,7 +46,7 @@ class ListAdapter (
 
         holder.checkSample.setOnClickListener {
             // mark task as done
-            val newData = TodoModel((position+1), titleText, 1)
+            val newData = TodoModel(titleText, 1)
             viewModel.updateTask(newData)
 
             holder.check.visibility = View.VISIBLE

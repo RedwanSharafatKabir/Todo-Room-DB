@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.example.todo.data.TodoDatabase
 import com.example.todo.data.TodoModel
 import com.example.todo.repository.TodoRepository
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +15,7 @@ class TodoViewModel(application: Application) : AndroidViewModel(application) {
     val allTodo : LiveData<List<TodoModel>>
 
     init {
-        val database: TodoDatabase? = TodoDatabase.getInstance(getApplication())
-        repository = TodoRepository(database!!)
+        repository = TodoRepository(application)
         allTodo = repository.getAllTasks()
     }
 
